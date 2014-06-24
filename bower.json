@@ -1,0 +1,25 @@
+{
+  "name": "ember-loader",
+  "description": "Return an object from a package that could be used in an Ember.Application.",
+  "version": "0.0.0",
+  "authors": [
+    "Michael \"Z\" Goddard <mzgoddard@gmail.com>"
+  ],
+  "description": "",
+  "moduleType": [
+    "es6"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "ember-data": "~1.0.0-beta.7",
+    "ember": "~1.5.1",
+    "jquery": "~2.1.1"
+  }
+}

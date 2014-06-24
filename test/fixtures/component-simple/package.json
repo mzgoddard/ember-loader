@@ -1,0 +1,6 @@
+{
+  "main": "index.js",
+  "dependencies": {
+    "ember-component-child": "0.0.0"
+  }
+}
