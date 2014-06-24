@@ -5,9 +5,14 @@ module.exports = {
     path: __dirname + '/tmp',
     filename: 'bundle.js'
   },
+  module: {
+    loaders: [
+      { test: /\.hbs$/, loader: 'ember-templates' }
+    ]
+  },
   resolve: {
     modulesDirectories: [
       './bower_components', './node_modules', './web_modules'
-    ]
+    ],
   }
 };

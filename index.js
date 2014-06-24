@@ -67,10 +67,7 @@ module.exports.pitch = function(remainingRequest) {
       return deps
         .filter(function(dep) {return !dep[2] || dep[2] === 'source';})
         .reduce(function(obj, dep) {
-          console.log(dep[0], path.relative(__dirname, dep[1]));
-          try {
-            types.transform(obj, dep[0], dep[1]);
-          } catch(e) {console.error(e);}
+          types.transform(obj, dep[0], dep[1]);
           return obj;
         }, {});
     })
@@ -78,6 +75,16 @@ module.exports.pitch = function(remainingRequest) {
     .then(function(obj) {
       var objCode = '{\n';
       _.keys(obj).forEach(function(key) {
+        if (key === 'TEMPLATES') {
+          objCode += '\tTEMPLATES: {\n';
+          _.keys(obj.TEMPLATES).forEach(function(key) {
+            objCode += '\t\t' +
+              JSON.stringify(key) + ': ' +
+              'require(' + JSON.stringify(obj.TEMPLATES[key]) + '),\n';
+          });
+          objCode += '\t},\n';
+          return;
+        }
         objCode += '\t' +
           JSON.stringify(key) + ': ' +
           'require(' + JSON.stringify(obj[key]) + '),\n';
