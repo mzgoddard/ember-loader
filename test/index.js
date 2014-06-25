@@ -21,6 +21,12 @@ describe('single files', function() {
     expect(controller.ControllerIndexController).to.exist;
   });
 
+  it('should load the deep controller fixture', function() {
+    var module = require('!!../!./fixtures/controller-deep');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.DeepIndexController).to.exist;
+  });
+
   it('should load fixture route', function() {
     var route = require('!!../!./fixtures/route');
     expect(Object.keys(route)).to.have.length.of(1);

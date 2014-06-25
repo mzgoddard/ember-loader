@@ -21,5 +21,8 @@
     "ember-data": "~1.0.0-beta.7",
     "ember": "~1.5.1",
     "jquery": "~2.1.1"
+  },
+  "resolutions": {
+    "jquery": "~2.1.1"
   }
 }
