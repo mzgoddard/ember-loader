@@ -35,6 +35,14 @@ describe('single files', function() {
     expect(module.TEMPLATES['shallow']).to.exist;
   });
 
+  it('should load the deep template fixture', function() {
+    var module = require('!!../!./fixtures/template-deep');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.TEMPLATES).to.exist;
+    expect(Object.keys(module.TEMPLATES)).to.have.length.of(1);
+    expect(module.TEMPLATES['deep/deep']).to.exist;
+  });
+
 });
 
 describe('components', function() {
