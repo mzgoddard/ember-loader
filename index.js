@@ -73,23 +73,7 @@ module.exports.pitch = function(remainingRequest) {
     })
     .catch(function(e) {console.error(e); throw e;})
     .then(function(obj) {
-      var objCode = '{\n';
-      _.keys(obj).forEach(function(key) {
-        if (key === 'TEMPLATES') {
-          objCode += '\tTEMPLATES: {\n';
-          _.keys(obj.TEMPLATES).forEach(function(key) {
-            objCode += '\t\t' +
-              JSON.stringify(key) + ': ' +
-              'require(' + JSON.stringify(obj.TEMPLATES[key]) + '),\n';
-          });
-          objCode += '\t},\n';
-          return;
-        }
-        objCode += '\t' +
-          JSON.stringify(key) + ': ' +
-          'require(' + JSON.stringify(obj[key]) + '),\n';
-      });
-      objCode += '}';
+      var objCode = generateObj(obj);
 
       var result = 'module.exports =\n' +
         extendCode +
@@ -97,4 +81,24 @@ module.exports.pitch = function(remainingRequest) {
       return result;
     })
     .then(function(v) {done(null, v);}, done);
+};
+
+var generateObj = function(obj, depth) {
+  depth = depth || 0;
+  var outerTab = _.times(depth).map(function() {return '\t';}).join('');
+  var tab = _.times(depth + 1).map(function() {return '\t';}).join('');
+
+  var code = '{\n';
+  _.keys(obj).forEach(function(key) {
+    if (_.isObject(obj[key])) {
+      code += tab + key + ': ';
+      code += generateObj(obj[key], depth + 1);
+      code += ',\n';
+    } else {
+      code += tab + JSON.stringify(key) + ': ' +
+        'require(' + JSON.stringify(obj[key]) + '),\n';
+    }
+  });
+  code += outerTab + '}';
+  return code;
 };
