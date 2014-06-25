@@ -27,6 +27,14 @@ describe('single files', function() {
     expect(module.DeepIndexController).to.exist;
   });
 
+  it('should load the init fixture', function() {
+    var module = require('!!../!./fixtures/initializer');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.INITIALIZERS).to.exist;
+    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(1);
+    expect(module.INITIALIZERS['index']).to.exist;
+  });
+
   it('should load fixture route', function() {
     var route = require('!!../!./fixtures/route');
     expect(Object.keys(route)).to.have.length.of(1);
