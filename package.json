@@ -4,7 +4,7 @@
   "authors": [
     "Michael \"Z\" Goddard <mzgoddard@gmail.com>"
   ],
-  "version": "0.0.4",
+  "version": "0.0.5",
   "repository": {
     "type": "git",
     "url": "git://github.com/mzgoddard/ember-loader.git"
