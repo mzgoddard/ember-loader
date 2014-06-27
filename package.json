@@ -5,6 +5,10 @@
     "Michael \"Z\" Goddard <mzgoddard@gmail.com>"
   ],
   "version": "0.0.4",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mzgoddard/ember-loader.git"
+  },
   "scripts": {
     "install": "bower install",
     "test": "node_modules/.bin/testem ci"
