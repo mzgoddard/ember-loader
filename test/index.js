@@ -73,6 +73,13 @@ describe('components', function() {
     expect(simple.ChildComponent).to.exist;
   });
 
+  it('should load fixture component-deep', function() {
+    var module = require('!!../!./fixtures/component-deep');
+    expect(Object.keys(module)).to.have.length.of(2);
+    expect(module.ShallowComponent).to.exist;
+    expect(module.DeepComponent).to.exist;
+  });
+
 });
 
 describe('apps', function() {

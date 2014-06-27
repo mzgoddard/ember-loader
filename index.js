@@ -32,8 +32,18 @@ module.exports.pitch = function(remainingRequest) {
     lastRequestPackage = path.resolve(lastRequestPackage, '..');
   }
 
-  // load package json for components
-  var componentDeps = findComponentDeps.call(this, lastRequestPackage);
+  // load components from external module directories
+  var componentDeps = promise
+    .resolve(query.componentsDirectories || ['node_modules'])
+    .bind(this)
+    .map(function(dir) {
+      return findComponentDeps.call(this, lastRequestPackage, dir);
+    })
+    .then(function(items) {
+      return _.reduce(items, function(v, items) {
+        return v.concat(items);
+      }, []);
+    });
   // look at contexts in given option
   var contextDeps = findDepsInContext
     .call(this, path.join(
