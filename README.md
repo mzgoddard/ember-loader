@@ -1,4 +1,4 @@
-# Ember Loader [![Build Status](https://travis-ci.org/mzgoddard/ember-loader.svg?branch=master)](https://travis-ci.org/mzgoddard/ember-loader)
+# Ember Loader [![Build Status](https://travis-ci.org/mzgoddard/ember-loader.svg?branch=master)](https://travis-ci.org/mzgoddard/ember-loader) [![Build status](https://ci.appveyor.com/api/projects/status/8l28rlhvb1rmlxoj)](https://ci.appveyor.com/project/mzgoddard/ember-loader)
 
 Enhance a modules object with contents of a folder following Ember naming patterns.
 
