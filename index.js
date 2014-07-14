@@ -67,12 +67,6 @@ module.exports.pitch = function(remainingRequest) {
         .map(function(dep) {return dep[1];})
         .forEach(function(dep) {this.addContextDependency(dep);}, this);
 
-      // Set file dependencies.
-      deps
-        .filter(function(dep) {return !dep[2] || dep[2] !== 'context';})
-        .map(function(dep) {return dep[1];})
-        .forEach(function(dep) {this.addDependency(dep);}, this);
-
       // Transform array of [key, value, depType] triplets into an object.
       return deps
         .filter(function(dep) {return !dep[2] || dep[2] === 'source';})
