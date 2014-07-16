@@ -27,6 +27,19 @@ describe('single files', function() {
     expect(module.DeepIndexController).to.exist;
   });
 
+  it('should load the deeper controller fixture', function() {
+    module = require('!!../!./fixtures/controller-deeper');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.DeepDeeperDeepestIndexController).to.exist;
+  });
+
+  it('should load both the deep and deeper controller fixture', function() {
+    module = require('!!../!./fixtures/controller-deep-and-deeper');
+    expect(Object.keys(module)).to.have.length.of(2);
+    expect(module.DeepIndexController).to.exist;
+    expect(module.DeepDeeperIndexController).to.exist;
+  });
+
   it('should load the init fixture', function() {
     var module = require('!!../!./fixtures/initializer');
     expect(Object.keys(module)).to.have.length.of(1);
