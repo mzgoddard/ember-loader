@@ -54,6 +54,12 @@ describe('single files', function() {
     expect(route.RouteIndexRoute).to.exist;
   });
 
+  it('should load fixture router', function() {
+    var module = require('!!../!./fixtures/router');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.ROUTING).to.exist;
+  });
+
   it('should load the shallow template fixture', function() {
     var module = require('!!../!./fixtures/template-shallow');
     expect(Object.keys(module)).to.have.length.of(1);
