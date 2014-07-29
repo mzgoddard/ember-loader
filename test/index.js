@@ -101,11 +101,24 @@ describe('components', function() {
 
 });
 
-describe('apps', function() {
+describe('modules', function() {
 
   it('should load fixutre simple', function() {
     var simple = require('!!../!./fixtures/simple');
     expect(simple.SimpleIndexRoute).to.exist;
+  });
+
+  it('should load fixture full-module', function() {
+    var module = require('!!../!./fixtures/full-module');
+    expect(Object.keys(module)).to.have.length.of(9);
+    expect(module.TestController).to.exist;
+    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
+    expect(module.INITIALIZERS.test).to.exist;
+    expect(module.TestRoute).to.exist;
+    expect(Object.keys(module.TEMPLATES)).to.have.length.of(2);
+    expect(module.TEMPLATES.test).to.exist;
+    expect(module.TestView).to.exist;
+    expect(module.ROUTING).to.exist;
   });
 
 });
