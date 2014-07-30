@@ -1,7 +1,7 @@
 {
   "name": "ember-loader",
   "description": "Return an object from a package that could be used in an Ember.Application.",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "authors": [
     "Michael \"Z\" Goddard <mzgoddard@gmail.com>"
   ],
