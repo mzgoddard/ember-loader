@@ -14,5 +14,10 @@ module.exports = {
     modulesDirectories: [
       './bower_components', './node_modules', './web_modules'
     ],
-  }
+  },
+  ember: {
+    concatComponentsDirectories: [
+      'bower_components', 'node_modules', 'web_modules'
+    ],
+  },
 };

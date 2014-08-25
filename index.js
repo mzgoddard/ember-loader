@@ -17,6 +17,7 @@ module.exports.pitch = function(remainingRequest) {
   this.cacheable && this.cacheable();
   var done = this.async();
   var query = loaderUtils.parseQuery(this.query);
+  var emberOptions = this.options.ember;
 
   // FIXME: We need to peer at the file system to know what to load
   // inputFileSystem isn't directly exposed to us. This could break and
@@ -33,8 +34,12 @@ module.exports.pitch = function(remainingRequest) {
   }
 
   // load components from external module directories
-  var componentDeps = promise
-    .resolve(query.componentsDirectories || ['node_modules'])
+  var componentDirs = _.uniq(query.componentsDirectories || [])
+    .concat(emberOptions && emberOptions.concatComponentsDirectories || []);
+  if (componentDirs.length === 0) {
+    componentDirs = ['node_modules'];
+  }
+  var componentDeps = promise.resolve(componentDirs)
     .bind(this)
     .map(function(dir) {
       return findComponentDeps.call(this, lastRequestPackage, dir);

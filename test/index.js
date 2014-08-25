@@ -99,6 +99,21 @@ describe('components', function() {
     expect(module.DeepComponent).to.exist;
   });
 
+  it('should load fixture component-web-modules', function() {
+    var module = require('!!../!./fixtures/component-web-modules');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.ChildComponent).to.exist;
+  });
+
+  it('should load fixture component-other-modules', function() {
+    var module = require(
+      '!!../?componentsDirectories[]=other_modules!' +
+      './fixtures/component-other-modules'
+    );
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.ChildComponent).to.exist;
+  });
+
 });
 
 describe('modules', function() {
