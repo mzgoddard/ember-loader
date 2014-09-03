@@ -144,4 +144,18 @@ describe('modules', function() {
     expect(Object.keys(module.TEMPLATES)).to.have.length.of(2);
   });
 
+  it('should load fixture pod', function() {
+    var module = require('!!../!./fixtures/pod');
+    expect(module).to.include.keys(
+      'Application', // Model
+      'ApplicationChildIndexRoute',
+      'ApplicationController',
+      'ApplicationRoute',
+      'ApplicationView',
+      'ApplicationIndexRoute'
+    );
+    expect(Object.keys(module)).to.have.length.of(7);
+    expect(module.TEMPLATES).to.include.keys('application', 'application/index');
+  });
+
 });
