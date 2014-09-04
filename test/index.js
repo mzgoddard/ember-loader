@@ -125,15 +125,37 @@ describe('modules', function() {
 
   it('should load fixture full-module', function() {
     var module = require('!!../!./fixtures/full-module');
-    expect(Object.keys(module)).to.have.length.of(9);
-    expect(module.TestController).to.exist;
-    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
+    expect(module).to.include.keys(
+      'Post',
+      'PostsController',
+      'PostsRoute',
+      'PostsView',
+      'TestController',
+      'TestRoute',
+      'TestView',
+      'INITIALIZERS',
+      'TEMPLATES',
+      'ROUTING'
+    );
+    expect(Object.keys(module)).to.have.length.of(10);
     expect(module.INITIALIZERS.test).to.exist;
-    expect(module.TestRoute).to.exist;
-    expect(Object.keys(module.TEMPLATES)).to.have.length.of(2);
+    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
     expect(module.TEMPLATES.test).to.exist;
-    expect(module.TestView).to.exist;
-    expect(module.ROUTING).to.exist;
+    expect(Object.keys(module.TEMPLATES)).to.have.length.of(2);
+  });
+
+  it('should load fixture pod', function() {
+    var module = require('!!../!./fixtures/pod');
+    expect(module).to.include.keys(
+      'Application', // Model
+      'ApplicationChildIndexRoute',
+      'ApplicationController',
+      'ApplicationRoute',
+      'ApplicationView',
+      'ApplicationIndexRoute'
+    );
+    expect(Object.keys(module)).to.have.length.of(7);
+    expect(module.TEMPLATES).to.include.keys('application', 'application/index');
   });
 
 });
