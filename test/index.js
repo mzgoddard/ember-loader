@@ -8,6 +8,19 @@ it('should load fixture empty', function() {
   var empty = require('!!../!./fixtures/empty');
 });
 
+it('empty fixture should not enumerate extend', function() {
+  var module = require('!!../!./fixtures/empty');
+  expect(module.extend).to.exist;
+  // .include.keys uses Object.keys that will not include parent prototype keys.
+  expect(module).to.not.include.keys('extend');
+  // for loop keys will include parent prototype keys.
+  var keys = [];
+  for (var key in module) {
+    keys.push(key);
+  }
+  expect(keys).to.not.include('extend');
+});
+
 it('should load fixture file-in-src', function() {
   require('!!../!./fixtures/file-in-src');
 });
@@ -157,6 +170,71 @@ describe('modules', function() {
     );
     expect(Object.keys(module)).to.have.length.of(8);
     expect(module.TEMPLATES).to.include.keys('application', 'application/index');
+  });
+
+});
+
+describe('extending', function() {
+
+  it('a loaded module can extend an empty object', function() {
+    var module = require('!!../!./fixtures/controller').extend({});
+    expect(module.ControllerIndexController).to.exist;
+  });
+
+  it('a loaded module can extend a object with a value', function() {
+    var module = require('!!../!./fixtures/controller').extend({
+      Object: 'object'
+    });
+    expect(module.Object).to.exist;
+    expect(module.ControllerIndexController).to.exist;
+  });
+
+  it('doesn\'t autofill the most recent object prototype', function() {
+    var module = require('!!../!./fixtures/extended-autofill');
+    expect(Ember.ControllerMixin.detect(module.ExtendedController)).to.be.false;
+    expect(module).to.include.keys('AutofillController'); 
+  });
+
+  it('autofills overloads extended objects but not fresh object', function() {
+    var parent = require('!!../!./fixtures/controller');
+    var module = require('!!../!./fixtures/extended-controller');
+    // The manual keys of the most recent manual set are not overloaded.
+    expect(Ember.ControllerMixin.detect(module.ExtendedController)).to.be.false;
+    expect(parent.ControllerIndexController).to
+      .not.equal(module.ControllerIndexController);
+    expect(module).to.include.keys('ControllerIndexController');
+  });
+
+  it('extends from another extended module', function() {
+    var parent = require('!!../!./fixtures/extended-autofill');
+    var module = require('!!../!./fixtures/extended-extends');
+    expect(Ember.ControllerMixin.detect(module.ExtendedController)).to.be.false;
+    expect(parent.ControllerIndexController).to
+      .not.equal(module.ControllerIndexController);
+    expect(module.AutofillController).to.exist;
+    expect(module.ControllerIndexController).to.exist;
+  });
+
+  it('extends initializers', function() {
+    var parent = require('!!../!./fixtures/extended-initializers/parent');
+    var module = require('!!../!./fixtures/extended-initializers');
+    expect(module.INITIALIZERS['autofill']).to.exist;
+    expect(module.INITIALIZERS['overload']).to
+      .not.equal(parent.INITIALIZERS['overload']);
+  });
+
+  it('extends routers', function() {
+    var parent = require('!!../!./fixtures/extended-routers/parent');
+    var module = require('!!../!./fixtures/extended-routers');
+    expect(parent.ROUTING).to.have.length.of(1);
+    expect(module.ROUTING).to.have.length.of(2);
+  });
+
+  it('extends templates', function() {
+    var parent = require('!!../!./fixtures/extended-templates/parent');
+    var module = require('!!../!./fixtures/extended-templates');
+    expect(module.TEMPLATES['application']).to.exist;
+    expect(module.TEMPLATES['index']).to.not.equal(parent.TEMPLATES['index']);
   });
 
 });
