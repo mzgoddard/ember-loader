@@ -2,22 +2,19 @@
   "name": "ember-loader",
   "description": "Return an object from a package that could be used in an Ember.Application.",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/mzgoddard/ember-loader.git"
+    "type": "git",
+    "url": "git://github.com/mzgoddard/ember-loader.git"
   },
   "authors": [
     "Michael \"Z\" Goddard <mzgoddard@gmail.com>"
   ],
   "version": "0.0.10",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/mzgoddard/ember-loader.git"
-  },
   "scripts": {
     "install": "bower install",
-    "test": "node_modules/.bin/testem ci"
+    "test": "testem ci"
   },
   "devDependencies": {
+    "bower": "^1.3.12",
     "chai": "^1.9.1",
     "ember-templates-loader": "^0.2.1",
     "forever": "^0.11.1",

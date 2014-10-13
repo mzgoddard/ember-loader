@@ -1,7 +1,6 @@
 require('script!jquery/dist/jquery');
 require('script!handlebars/handlebars');
 require('script!ember/ember');
-require('script!ember-data/ember-data');
 
 const expect = require('chai').expect;
 
