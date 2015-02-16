@@ -221,6 +221,8 @@ describe('extending', function() {
     expect(module.INITIALIZERS['autofill']).to.exist;
     expect(module.INITIALIZERS['overload']).to
       .not.equal(parent.INITIALIZERS['overload']);
+    expect(module.INITIALIZERS['manual']).to
+      .not.equal(parent.INITIALIZERS['manual']);
   });
 
   it('extends routers', function() {
@@ -235,6 +237,7 @@ describe('extending', function() {
     var module = require('!!../!./fixtures/extended-templates');
     expect(module.TEMPLATES['application']).to.exist;
     expect(module.TEMPLATES['index']).to.not.equal(parent.TEMPLATES['index']);
+    expect(module.TEMPLATES['manual']).to.not.equal(parent.TEMPLATES['manual']);
   });
 
 });

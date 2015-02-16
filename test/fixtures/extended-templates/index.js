@@ -1,1 +1,5 @@
-module.exports = require('!!../../../!./parent').extend({});
+module.exports = require('!!../../../!./parent').extend({
+  TEMPLATES: {
+    manual: 'some-value-other-than-the-overloaded-module'
+  }
+});
