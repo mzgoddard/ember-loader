@@ -120,6 +120,7 @@ describe('modules', function() {
   it('should load fixutre simple', function() {
     var simple = require('!!../!./fixtures/simple');
     expect(simple.SimpleIndexRoute).to.exist;
+    expect(simple.SimpleIndexController).to.exist;
   });
 
   it('should load fixture full-module', function() {
@@ -151,9 +152,10 @@ describe('modules', function() {
       'ApplicationController',
       'ApplicationRoute',
       'ApplicationView',
-      'ApplicationIndexRoute'
+      'ApplicationIndexRoute',
+      'SmallModuleRoute'
     );
-    expect(Object.keys(module)).to.have.length.of(7);
+    expect(Object.keys(module)).to.have.length.of(8);
     expect(module.TEMPLATES).to.include.keys('application', 'application/index');
   });
 
