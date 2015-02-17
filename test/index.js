@@ -153,10 +153,35 @@ describe('modules', function() {
       'ApplicationRoute',
       'ApplicationView',
       'ApplicationIndexRoute',
+      'PodItemComponent',
+      'PodListComponent',
+      'PodOverviewComponent',
+      'PodPairComponent',
+      'PodScoreComponent',
+      'PodSuperComponent',
       'SmallModuleRoute'
     );
-    expect(Object.keys(module)).to.have.length.of(8);
-    expect(module.TEMPLATES).to.include.keys('application', 'application/index');
+    expect(Object.keys(module)).to.have.length.of(14);
+    expect(module.TEMPLATES).to.include.keys(
+      'application',
+      'application/index'
+    );
+    expect(module.TEMPLATES).to.not.include.keys(
+      'pod/item/component'
+    );
+  });
+
+  it('should load fixture pod-dash', function() {
+    var module = require('!!../!./fixtures/pod-dash');
+    expect(module).to.exist;
+    expect(module.TEMPLATES).to.exist;
+    expect(module).to.include.keys(
+      'ChildIndexRoute',
+      'IndexRoute'
+    );
+    expect(module.TEMPLATES).to.include.keys(
+      'index'
+    );
   });
 
 });
