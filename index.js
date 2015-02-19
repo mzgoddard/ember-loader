@@ -96,18 +96,23 @@ var generateObj = function(obj, depth) {
   depth = depth || 0;
   var outerTab = _.times(depth).map(function() {return '\t';}).join('');
   var tab = _.times(depth + 1).map(function() {return '\t';}).join('');
+  var isArray = Array.isArray(obj);
 
-  var code = '{\n';
-  _.keys(obj).forEach(function(key) {
-    if (_.isObject(obj[key])) {
-      code += tab + key + ': ';
-      code += generateObj(obj[key], depth + 1);
-      code += ',\n';
-    } else {
-      code += tab + JSON.stringify(key) + ': ' +
-        'require(' + JSON.stringify(obj[key]) + '),\n';
+  var code = isArray ? '[\n' : '{\n';
+  var keys = _.keys(obj);
+  keys.forEach(function(key, index) {
+    code += tab;
+    if (!isArray) {
+      code += JSON.stringify(key) + ': ';
     }
+    if (_.isObject(obj[key])) {
+      code += generateObj(obj[key], depth + 1);
+    } else {
+      code += 'require(' + JSON.stringify(obj[key]) + ')';
+    }
+    code += !isArray || isArray && index < keys.length - 1 ? ',' : '';
+    code += '\n';
   });
-  code += outerTab + '}';
+  code += outerTab + (isArray ? ']' : '}');
   return code;
 };
