@@ -55,7 +55,8 @@ describe('single files', function() {
 
   it('should load fixture router', function() {
     var module = require('!!../!./fixtures/router');
-    expect(Object.keys(module)).to.have.length.of(1);
+    expect(Object.keys(module)).to.have.length.of(2);
+    expect(module.ROUTERS).to.exist;
     expect(module.ROUTING).to.exist;
   });
 
@@ -135,9 +136,10 @@ describe('modules', function() {
       'TestView',
       'INITIALIZERS',
       'TEMPLATES',
+      'ROUTERS',
       'ROUTING'
     );
-    expect(Object.keys(module)).to.have.length.of(10);
+    expect(Object.keys(module)).to.have.length.of(11);
     expect(module.INITIALIZERS.test).to.exist;
     expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
     expect(module.TEMPLATES.test).to.exist;

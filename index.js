@@ -7,10 +7,13 @@ const promise = require('bluebird');
 const config = require('./lib/config');
 const types = require('./lib/types');
 const utils = require('./lib/utils');
+const archetype = require('./lib/archetype');
 
 const findComponentDeps = utils.findComponentDeps;
 const findDepsInContext = utils.findDepsInContext;
 const titleCaseFromDashed = utils.titleCaseFromDashed;
+
+const ArchetypeArray = archetype.ArchetypeArray;
 
 module.exports = function() {};
 module.exports.pitch = function(remainingRequest) {
@@ -18,6 +21,7 @@ module.exports.pitch = function(remainingRequest) {
   var done = this.async();
   var query = loaderUtils.parseQuery(this.query);
   var emberOptions = this.options.ember;
+  var archetypes = ArchetypeArray.fromOptions(emberOptions, query);
 
   // FIXME: We need to peer at the file system to know what to load
   // inputFileSystem isn't directly exposed to us. This could break and
@@ -57,7 +61,7 @@ module.exports.pitch = function(remainingRequest) {
     ));
 
   var extendCode = 'require(' +
-    JSON.stringify('!!' + path.join(__dirname, 'lib', 'extend.js')) +
+    JSON.stringify('!!' + archetypes.extendUrl(this)) +
   ')\n';
   var targetCode = 'require(' + JSON.stringify('!!' + remainingRequest) + ')\n';
 
@@ -76,9 +80,15 @@ module.exports.pitch = function(remainingRequest) {
       return deps
         .filter(function(dep) {return !dep[2] || dep[2] === 'source';})
         .reduce(function(obj, dep) {
-          types.transform(obj, dep[0], dep[1]);
-          return obj;
-        }, {});
+          return obj
+            .tap(function(obj) {
+              return promise.try(archetypes.store.bind(
+                archetypes,
+                obj,
+                { name: dep[0], fullpath: dep[1] }
+              ));
+            });
+        }, promise.resolve({}));
     })
     .catch(function(e) {console.error(e); throw e;})
     .then(function(obj) {
