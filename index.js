@@ -5,7 +5,6 @@ const loaderUtils = require('loader-utils');
 const promise = require('bluebird');
 
 const config = require('./lib/config');
-const types = require('./lib/types');
 const utils = require('./lib/utils');
 const archetype = require('./lib/archetype');
 
