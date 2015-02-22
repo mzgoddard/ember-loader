@@ -1,4 +1,4 @@
 module.exports = {
-  name: 'index',
+  name: 'test',
   initialize: function(container, app) {}
 };

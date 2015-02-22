@@ -47,6 +47,22 @@ describe('single files', function() {
     expect(module.INITIALIZERS['index']).to.exist;
   });
 
+  it('should load the initializer fixture', function() {
+    var module = require('!!../!./fixtures/initializer-new');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.INITIALIZERS).to.exist;
+    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(1);
+    expect(module.INITIALIZERS['index']).to.exist;
+  });
+
+  it('should load the initializer-suffix fixture', function() {
+    var module = require('!!../!./fixtures/initializer-suffix');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.INITIALIZERS).to.exist;
+    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
+    expect(module.INITIALIZERS).to.include.keys('index', 'application');
+  });
+
   it('should load fixture route', function() {
     var route = require('!!../!./fixtures/route');
     expect(Object.keys(route)).to.have.length.of(1);
@@ -158,12 +174,14 @@ describe('modules', function() {
   it('should load fixture pod', function() {
     var module = require('!!../!./fixtures/pod');
     expect(module).to.include.keys(
-      'Application', // Model
+      // Model
+      'Application',
       'ApplicationChildIndexRoute',
       'ApplicationController',
+      'ApplicationIndexRoute',
       'ApplicationRoute',
       'ApplicationView',
-      'ApplicationIndexRoute',
+      'INITIALIZERS',
       'PodItemComponent',
       'PodListComponent',
       'PodOverviewComponent',
@@ -172,7 +190,7 @@ describe('modules', function() {
       'PodSuperComponent',
       'SmallModuleRoute'
     );
-    expect(Object.keys(module)).to.have.length.of(14);
+    expect(Object.keys(module)).to.have.length.of(15);
     expect(module.TEMPLATES).to.include.keys(
       'application',
       'application/index'
