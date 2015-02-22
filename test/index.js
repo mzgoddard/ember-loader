@@ -60,6 +60,15 @@ describe('single files', function() {
     expect(module.ROUTING).to.exist;
   });
 
+  it('should load fixture router-multiple', function() {
+    var module = require('!!../!./fixtures/router-multiple');
+    expect(Object.keys(module)).to.have.length.of(2);
+    expect(module.ROUTERS).to.exist;
+    expect(module.ROUTERS).to.have.length(2);
+    expect(module.ROUTING).to.exist;
+    expect(module.ROUTING).to.be.a('function');
+  });
+
   it('should load the shallow template fixture', function() {
     var module = require('!!../!./fixtures/template-shallow');
     expect(Object.keys(module)).to.have.length.of(1);
