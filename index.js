@@ -5,12 +5,14 @@ const loaderUtils = require('loader-utils');
 const promise = require('bluebird');
 
 const config = require('./lib/config');
-const types = require('./lib/types');
 const utils = require('./lib/utils');
+const archetype = require('./lib/archetype');
 
 const findComponentDeps = utils.findComponentDeps;
 const findDepsInContext = utils.findDepsInContext;
 const titleCaseFromDashed = utils.titleCaseFromDashed;
+
+const ArchetypeArray = archetype.ArchetypeArray;
 
 module.exports = function() {};
 module.exports.pitch = function(remainingRequest) {
@@ -18,6 +20,7 @@ module.exports.pitch = function(remainingRequest) {
   var done = this.async();
   var query = loaderUtils.parseQuery(this.query);
   var emberOptions = this.options.ember;
+  var archetypes = ArchetypeArray.fromOptions(emberOptions, query);
 
   // FIXME: We need to peer at the file system to know what to load
   // inputFileSystem isn't directly exposed to us. This could break and
@@ -57,7 +60,7 @@ module.exports.pitch = function(remainingRequest) {
     ));
 
   var extendCode = 'require(' +
-    JSON.stringify('!!' + path.join(__dirname, 'lib', 'extend.js')) +
+    JSON.stringify('!!' + archetypes.extendUrl(this)) +
   ')\n';
   var targetCode = 'require(' + JSON.stringify('!!' + remainingRequest) + ')\n';
 
@@ -76,9 +79,15 @@ module.exports.pitch = function(remainingRequest) {
       return deps
         .filter(function(dep) {return !dep[2] || dep[2] === 'source';})
         .reduce(function(obj, dep) {
-          types.transform(obj, dep[0], dep[1]);
-          return obj;
-        }, {});
+          return obj
+            .tap(function(obj) {
+              return promise.try(archetypes.store.bind(
+                archetypes,
+                obj,
+                { name: dep[0], fullpath: dep[1] }
+              ));
+            });
+        }, promise.resolve({}));
     })
     .catch(function(e) {console.error(e); throw e;})
     .then(function(obj) {
@@ -96,18 +105,23 @@ var generateObj = function(obj, depth) {
   depth = depth || 0;
   var outerTab = _.times(depth).map(function() {return '\t';}).join('');
   var tab = _.times(depth + 1).map(function() {return '\t';}).join('');
+  var isArray = Array.isArray(obj);
 
-  var code = '{\n';
-  _.keys(obj).forEach(function(key) {
-    if (_.isObject(obj[key])) {
-      code += tab + key + ': ';
-      code += generateObj(obj[key], depth + 1);
-      code += ',\n';
-    } else {
-      code += tab + JSON.stringify(key) + ': ' +
-        'require(' + JSON.stringify(obj[key]) + '),\n';
+  var code = isArray ? '[\n' : '{\n';
+  var keys = _.keys(obj);
+  keys.forEach(function(key, index) {
+    code += tab;
+    if (!isArray) {
+      code += JSON.stringify(key) + ': ';
     }
+    if (_.isObject(obj[key])) {
+      code += generateObj(obj[key], depth + 1);
+    } else {
+      code += 'require(' + JSON.stringify(obj[key]) + ')';
+    }
+    code += !isArray || isArray && index < keys.length - 1 ? ',' : '';
+    code += '\n';
   });
-  code += outerTab + '}';
+  code += outerTab + (isArray ? ']' : '}');
   return code;
 };

@@ -12,12 +12,18 @@ it('should load fixture file-in-src', function() {
   require('!!../!./fixtures/file-in-src');
 });
 
-describe('single files', function() {
+describe('single type', function() {
 
   it('should load fixture controller', function() {
     var controller = require('!!../!./fixtures/controller');
     expect(Object.keys(controller)).to.have.length.of(1);
     expect(controller.ControllerIndexController).to.exist;
+  });
+
+  it('should load fixture controller-suffix', function() {
+    var controller = require('!!../!./fixtures/controller-suffix');
+    expect(Object.keys(controller)).to.have.length.of(1);
+    expect(controller.IndexController).to.exist;
   });
 
   it('should load the deep controller fixture', function() {
@@ -47,20 +53,60 @@ describe('single files', function() {
     expect(module.INITIALIZERS['index']).to.exist;
   });
 
+  it('should load the initializer fixture', function() {
+    var module = require('!!../!./fixtures/initializer-new');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.INITIALIZERS).to.exist;
+    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(1);
+    expect(module.INITIALIZERS['index']).to.exist;
+  });
+
+  it('should load the initializer-suffix fixture', function() {
+    var module = require('!!../!./fixtures/initializer-suffix');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.INITIALIZERS).to.exist;
+    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
+    expect(module.INITIALIZERS).to.include.keys('index', 'application');
+  });
+
   it('should load fixture route', function() {
     var route = require('!!../!./fixtures/route');
     expect(Object.keys(route)).to.have.length.of(1);
     expect(route.RouteIndexRoute).to.exist;
   });
 
+  it('should load fixture route-suffix', function() {
+    var route = require('!!../!./fixtures/route-suffix');
+    expect(Object.keys(route)).to.have.length.of(1);
+    expect(route.IndexRoute).to.exist;
+  });
+
   it('should load fixture router', function() {
     var module = require('!!../!./fixtures/router');
-    expect(Object.keys(module)).to.have.length.of(1);
+    expect(Object.keys(module)).to.have.length.of(2);
+    expect(module.ROUTERS).to.exist;
     expect(module.ROUTING).to.exist;
+  });
+
+  it('should load fixture router-multiple', function() {
+    var module = require('!!../!./fixtures/router-multiple');
+    expect(Object.keys(module)).to.have.length.of(2);
+    expect(module.ROUTERS).to.exist;
+    expect(module.ROUTERS).to.have.length(2);
+    expect(module.ROUTING).to.exist;
+    expect(module.ROUTING).to.be.a('function');
   });
 
   it('should load the shallow template fixture', function() {
     var module = require('!!../!./fixtures/template-shallow');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.TEMPLATES).to.exist;
+    expect(Object.keys(module.TEMPLATES)).to.have.length.of(1);
+    expect(module.TEMPLATES['shallow']).to.exist;
+  });
+
+  it('should load the template-suffix fixture', function() {
+    var module = require('!!../!./fixtures/template-suffix');
     expect(Object.keys(module)).to.have.length.of(1);
     expect(module.TEMPLATES).to.exist;
     expect(Object.keys(module.TEMPLATES)).to.have.length.of(1);
@@ -83,6 +129,12 @@ describe('components', function() {
     var inline = require('!!../!./fixtures/component-inline');
     expect(Object.keys(inline)).to.have.length.of(1);
     expect(inline.ComponentInlineSimpleComponent).to.exist;
+  });
+
+  it('should load fixture component-suffix', function() {
+    var inline = require('!!../!./fixtures/component-suffix');
+    expect(Object.keys(inline)).to.have.length.of(1);
+    expect(inline.InlineComponent).to.exist;
   });
 
   it('should load fixture component-simple', function() {
@@ -135,9 +187,10 @@ describe('modules', function() {
       'TestView',
       'INITIALIZERS',
       'TEMPLATES',
+      'ROUTERS',
       'ROUTING'
     );
-    expect(Object.keys(module)).to.have.length.of(10);
+    expect(Object.keys(module)).to.have.length.of(11);
     expect(module.INITIALIZERS.test).to.exist;
     expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
     expect(module.TEMPLATES.test).to.exist;
@@ -147,12 +200,14 @@ describe('modules', function() {
   it('should load fixture pod', function() {
     var module = require('!!../!./fixtures/pod');
     expect(module).to.include.keys(
-      'Application', // Model
+      // Model
+      'Application',
       'ApplicationChildIndexRoute',
       'ApplicationController',
+      'ApplicationIndexRoute',
       'ApplicationRoute',
       'ApplicationView',
-      'ApplicationIndexRoute',
+      'INITIALIZERS',
       'PodItemComponent',
       'PodListComponent',
       'PodOverviewComponent',
@@ -161,7 +216,7 @@ describe('modules', function() {
       'PodSuperComponent',
       'SmallModuleRoute'
     );
-    expect(Object.keys(module)).to.have.length.of(14);
+    expect(Object.keys(module)).to.have.length.of(15);
     expect(module.TEMPLATES).to.include.keys(
       'application',
       'application/index'
