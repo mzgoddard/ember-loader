@@ -8,7 +8,6 @@ const config = require('./lib/config');
 const utils = require('./lib/utils');
 const archetype = require('./lib/archetype');
 
-const findComponentDeps = utils.findComponentDeps;
 const findModuleDeps = utils.findModuleDeps;
 const findDepsInContext = utils.findDepsInContext;
 const titleCaseFromDashed = utils.titleCaseFromDashed;
