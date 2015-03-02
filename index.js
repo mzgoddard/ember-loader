@@ -19,9 +19,9 @@ module.exports.pitch = function(remainingRequest) {
   this.cacheable && this.cacheable();
   var done = this.async();
   var query = loaderUtils.parseQuery(this.query);
-  var emberOptions = this.options.ember;
+  var emberOptions = this.options[query.optionKey || 'ember'];
   var archetypes = this.archetypes =
-    ArchetypeArray.fromOptions(emberOptions, query);
+    ArchetypeArray.fromOptions(this.options, emberOptions, query);
 
   // FIXME: We need to peer at the file system to know what to load
   // inputFileSystem isn't directly exposed to us. This could break and
