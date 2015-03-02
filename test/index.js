@@ -143,8 +143,26 @@ describe('components', function() {
     expect(simple.ChildComponent).to.exist;
   });
 
+  it('should load fixture component-simple', function() {
+    var simple = require(
+      '!!..?optionKey=emberWithExternalComponents' +
+        '!./fixtures/component-simple'
+    );
+    expect(Object.keys(simple)).to.have.length.of(1);
+    expect(simple.ChildComponent).to.exist;
+  });
+
   it('should load fixture component-deep', function() {
     var module = require('!!../!./fixtures/component-deep');
+    expect(Object.keys(module)).to.have.length.of(2);
+    expect(module.ShallowComponent).to.exist;
+    expect(module.DeepComponent).to.exist;
+  });
+
+  it('should load fixture component-deep', function() {
+    var module = require(
+      '!!..?optionKey=emberWithExternalComponents!./fixtures/component-deep'
+    );
     expect(Object.keys(module)).to.have.length.of(2);
     expect(module.ShallowComponent).to.exist;
     expect(module.DeepComponent).to.exist;
@@ -156,6 +174,16 @@ describe('components', function() {
     expect(module.ChildComponent).to.exist;
   });
 
+  it('should load fixture component-web-modules', function() {
+    var module = require(
+      '!!..?optionKey=emberWithExternalComponents' +
+        '!./fixtures/component-web-modules'
+    );
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.ChildComponent).to.exist;
+  });
+
+  // TODO 0.1: Drop this test as we will drop componentsDirectories support.
   it('should load fixture component-other-modules', function() {
     var module = require(
       '!!../?componentsDirectories[]=other_modules!' +
@@ -223,6 +251,111 @@ describe('modules', function() {
     );
     expect(module.TEMPLATES).to.not.include.keys(
       'pod/item/component'
+    );
+  });
+
+  it('should load fixture pod with explicit defaults', function() {
+    var module = require('!!..?optionKey=emberWithDefaults!./fixtures/pod');
+    expect(module).to.include.keys(
+      // Model
+      'Application',
+      'ApplicationChildIndexRoute',
+      'ApplicationController',
+      'ApplicationIndexRoute',
+      'ApplicationRoute',
+      'ApplicationView',
+      'INITIALIZERS',
+      'PodItemComponent',
+      'PodListComponent',
+      'PodOverviewComponent',
+      'PodPairComponent',
+      'PodScoreComponent',
+      'PodSuperComponent',
+      'SmallModuleRoute'
+    );
+  });
+
+  it('should load fixture pod with only components', function() {
+    var module = require(
+      '!!..?optionKey=emberWithDefaultString!./fixtures/pod'
+    );
+    expect(module).to.include.keys(
+      'PodItemComponent',
+      'PodListComponent',
+      'PodOverviewComponent',
+      'PodPairComponent',
+      'PodScoreComponent',
+      'PodSuperComponent'
+    );
+  });
+
+  it('should load fixture pod with only components', function() {
+    var module = require(
+      '!!..?optionKey=emberWithDefaultTypes!./fixtures/pod'
+    );
+    expect(module).to.include.keys(
+      'PodItemComponent',
+      'PodListComponent',
+      'PodOverviewComponent',
+      'PodPairComponent',
+      'PodScoreComponent',
+      'PodSuperComponent'
+    );
+  });
+
+  it('should load fixture pod with only components', function() {
+    var module = require(
+      '!!..?optionKey=emberWithNamedDefault!./fixtures/pod'
+    );
+    expect(module).to.include.keys(
+      'PodItemComponent',
+      'PodListComponent',
+      'PodOverviewComponent',
+      'PodPairComponent',
+      'PodScoreComponent',
+      'PodSuperComponent'
+    );
+  });
+
+  it('should load fixture pod with only components', function() {
+    var module = require(
+      '!!..?optionKey=emberWithDottedDefault!./fixtures/pod'
+    );
+    expect(module).to.include.keys(
+      'PodItemComponent',
+      'PodListComponent',
+      'PodOverviewComponent',
+      'PodPairComponent',
+      'PodScoreComponent',
+      'PodSuperComponent'
+    );
+  });
+
+  it('should load fixture pod with only components', function() {
+    var module = require(
+      '!!..?optionKey=emberWithDottedReference!./fixtures/pod'
+    );
+    expect(module).to.include.keys(
+      'PodItemComponent',
+      'PodListComponent',
+      'PodOverviewComponent',
+      'PodPairComponent',
+      'PodScoreComponent',
+      'PodSuperComponent'
+    );
+  });
+
+  it('should load fixture pod with only components', function() {
+    var module = require(
+      '!!..?optionKey=emberWithDottedDoubleReference!./fixtures/pod'
+    );
+    expect(module).to.include.keys(
+      'PodItemComponent',
+      'PodListComponent',
+      'PodOverviewComponent',
+      'PodPairComponent',
+      'PodScoreComponent',
+      'PodSuperComponent'
     );
   });
 
