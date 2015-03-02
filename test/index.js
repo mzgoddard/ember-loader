@@ -1,6 +1,7 @@
 require('script!jquery/dist/jquery');
 require('script!handlebars/handlebars');
 require('script!ember/ember');
+require('script!ember-mocha-adapter/adapter');
 
 const expect = require('chai').expect;
 
@@ -223,6 +224,7 @@ describe('modules', function() {
     expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
     expect(module.TEMPLATES.test).to.exist;
     expect(Object.keys(module.TEMPLATES)).to.have.length.of(2);
+    expect(module.ROUTERS).to.have.length.of(1);
   });
 
   it('should load fixture pod', function() {
@@ -370,6 +372,64 @@ describe('modules', function() {
     expect(module.TEMPLATES).to.include.keys(
       'index'
     );
+  });
+
+});
+
+describe('application', function() {
+
+  it('returns an Ember.Application', function() {
+    var AppFactory = require('!!..?application!./fixtures/empty');
+    expect(AppFactory.proto()).to.be.an
+      .instanceof(Ember.Application.proto().constructor);
+  });
+
+  var app;
+  before(function() {
+    if ($('#ember-testing').length === 0) {
+      $(document.body).append('<div id="ember-testing"></div>');
+    }
+
+    var AppFactory = require('!!..?application!./fixtures/app');
+    app = AppFactory.create({
+      rootElement: '#ember-testing'
+    });
+
+    app.setupForTesting();
+    app.injectTestHelpers();
+  });
+
+  afterEach(function() {
+    app.reset();
+  });
+
+  it('bootstraps initializers', function() {
+    wait();
+    andThen(function() {
+      expect(app.__container__.lookup('data:main')).to.exist;
+    });
+  });
+
+  it('bootstraps routers', function() {
+    visit('greetings');
+    andThen(function() {
+      expect(currentRouteName()).to.eql('greetings');
+    });
+  });
+
+  it('bootstraps templates', function() {
+    expect(Ember.TEMPLATES).to.include.keys(
+      'greetings',
+      'index'
+    );
+    expect(Object.keys(Ember.TEMPLATES)).to.have.length(2);
+  });
+
+  it('renders a template', function() {
+    visit('greetings');
+    andThen(function() {
+      expect(find('.greetings').text()).to.eql('Hello world!');
+    });
   });
 
 });
