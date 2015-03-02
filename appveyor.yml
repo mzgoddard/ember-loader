@@ -10,18 +10,26 @@ init:
 # what combinations to test
 environment:
   matrix:
+    - nodejs_version: 0.12
     - nodejs_version: 0.10
 
 # Get the latest stable version of Node 0.STABLE.latest
 install:
+  - ps: Install-Product node $env:nodejs_version
+  - node --version
+  - npm install -g npm@^2
+  - npm --version
   - npm install -g bower
   - npm install
+  - node_modules\.bin\testem launchers
 
 build: off
 
 test_script:
-  - node --version
-  - npm --version
-  - node_modules\.bin\testem launchers
-  - ps: node_modules\.bin\testem ci # PowerShell
-  - cmd: node_modules\.bin\testem ci
+  - cmd: npm test
+
+cache:
+  - C:\Users\appveyor\AppData\Roaming\npm\node_modules  # global npm modules
+  - C:\Users\appveyor\AppData\Roaming\npm-cache         # npm cache
+  - node_modules                                        # local npm modules
+  - bower_components                                    # local bower components
