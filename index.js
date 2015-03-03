@@ -19,7 +19,7 @@ module.exports.pitch = function(remainingRequest) {
   this.cacheable && this.cacheable();
   var done = this.async();
   var query = loaderUtils.parseQuery(this.query);
-  var emberOptions = this.options[query.optionKey || 'ember'];
+  var emberOptions = this.options[query.optionKey || 'ember'] || {};
   var archetypes = this.archetypes =
     ArchetypeArray.fromOptions(this.options, emberOptions, query);
 
