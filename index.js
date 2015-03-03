@@ -4,15 +4,15 @@ const _ = require('lodash');
 const loaderUtils = require('loader-utils');
 const promise = require('bluebird');
 
-const config = require('./lib/config');
 const utils = require('./lib/utils');
 const archetype = require('./lib/archetype');
 
-const findComponentDeps = utils.findComponentDeps;
+const findModuleDeps = utils.findModuleDeps;
 const findDepsInContext = utils.findDepsInContext;
 const titleCaseFromDashed = utils.titleCaseFromDashed;
 
 const ArchetypeArray = archetype.ArchetypeArray;
+const ArchetypeMatch = archetype.ArchetypeMatch;
 
 module.exports = function() {};
 module.exports.pitch = function(remainingRequest) {
@@ -20,7 +20,8 @@ module.exports.pitch = function(remainingRequest) {
   var done = this.async();
   var query = loaderUtils.parseQuery(this.query);
   var emberOptions = this.options.ember;
-  var archetypes = ArchetypeArray.fromOptions(emberOptions, query);
+  var archetypes = this.archetypes =
+    ArchetypeArray.fromOptions(emberOptions, query);
 
   // FIXME: We need to peer at the file system to know what to load
   // inputFileSystem isn't directly exposed to us. This could break and
@@ -36,36 +37,48 @@ module.exports.pitch = function(remainingRequest) {
     lastRequestPackage = path.resolve(lastRequestPackage, '..');
   }
 
-  // load components from external module directories
-  var componentDirs = _.uniq(query.componentsDirectories || [])
-    .concat(emberOptions && emberOptions.concatComponentsDirectories || []);
-  if (componentDirs.length === 0) {
-    componentDirs = ['node_modules'];
-  }
-  var componentDeps = promise.resolve(componentDirs)
-    .bind(this)
-    .map(function(dir) {
-      return findComponentDeps.call(this, lastRequestPackage, dir);
-    })
-    .then(function(items) {
-      return _.reduce(items, function(v, items) {
-        return v.concat(items);
-      }, []);
-    });
-  // look at contexts in given option
-  var contextDeps = findDepsInContext
-    .call(this, path.join(
-      lastRequestPackage,
-      query.src === undefined ? 'src' : query.src
-    ));
-
   var extendCode = 'require(' +
     JSON.stringify('!!' + archetypes.extendUrl(this)) +
   ')\n';
   var targetCode = 'require(' + JSON.stringify('!!' + remainingRequest) + ')\n';
 
+  var allDeps = [];
+  var depsLookup = query.depsLookup || ['modules', 'context'];
+  if (_.contains(depsLookup, 'modules')) {
+    // load components from external module directories
+    // TODO 0.1: Remove query.componentsDirectories
+    var componentDirs = (query.componentsDirectories || [])
+      // TODO 0.1: Remove concatComponentsDirectories
+      .concat(emberOptions && emberOptions.concatComponentsDirectories || [])
+      .concat(this.options.resolve.modulesDirectories || []);
+    componentDirs = _.uniq(componentDirs);
+    if (componentDirs.length === 0) {
+      componentDirs = ['node_modules'];
+    }
+    var packageDeps = promise.resolve(componentDirs)
+      .bind(this)
+      .map(function(dir) {
+        return findModuleDeps.call(this, lastRequestPackage, dir);
+      })
+      .then(function(items) {
+        return _.reduce(items, function(v, items) {
+          return v.concat(items);
+        }, []);
+      });
+    allDeps.push(packageDeps);
+  }
+  if (_.contains(depsLookup, 'context')) {
+    // look at contexts in given option
+    var contextDeps = findDepsInContext
+      .call(this, path.join(
+        lastRequestPackage,
+        query.src === undefined ? 'src' : query.src
+      ));
+    allDeps.push(contextDeps);
+  }
+
   // transform components/name/index.js into NameComponent etc
-  promise.all([componentDeps, contextDeps])
+  promise.all(allDeps)
     .bind(this)
     .reduce(function(v, deps) {return v.concat.apply(v, [deps]);}, [])
     .then(function(deps) {
@@ -90,13 +103,17 @@ module.exports.pitch = function(remainingRequest) {
         }, promise.resolve({}));
     })
     .catch(function(e) {console.error(e); throw e;})
-    .then(function(obj) {
-      var objCode = generateObj(obj);
+    .then(generateObj)
+    .then(function(objCode) {
+      var result = targetCode;
 
-      var result = 'module.exports =\n' +
-        extendCode +
-        '(' + objCode + ', ' + targetCode + ');\n';
-      return result;
+      if (query.ignoreOverrides) {
+        result = '{}';
+      }
+
+      result = extendCode + '(' + objCode + ', ' + result + ')';
+
+      return  'module.exports =\n' + result + ';\n';
     })
     .then(function(v) {done(null, v);}, done);
 };
@@ -109,19 +126,34 @@ var generateObj = function(obj, depth) {
 
   var code = isArray ? '[\n' : '{\n';
   var keys = _.keys(obj);
-  keys.forEach(function(key, index) {
-    code += tab;
-    if (!isArray) {
-      code += JSON.stringify(key) + ': ';
-    }
-    if (_.isObject(obj[key])) {
-      code += generateObj(obj[key], depth + 1);
-    } else {
-      code += 'require(' + JSON.stringify(obj[key]) + ')';
-    }
-    code += !isArray || isArray && index < keys.length - 1 ? ',' : '';
-    code += '\n';
-  });
-  code += outerTab + (isArray ? ']' : '}');
-  return code;
+  return promise.resolve(keys)
+    .bind(this)
+    .reduce(function(code, key, index) {
+      code += tab;
+      if (!isArray) {
+        code += JSON.stringify(key) + ': ';
+      }
+      return promise.resolve()
+        .bind(this)
+        .then(function() {
+          if (obj[key] instanceof ArchetypeMatch) {
+            return this.archetypes.generate(obj[key], depth + 1);
+          } else if (_.isObject(obj[key])) {
+            return generateObj.call(this, obj[key], depth + 1);
+          } else {
+            return 'require(' + JSON.stringify(obj[key]) + ')';
+          }
+        })
+        .then(function(generated) {
+          return code + generated;
+        })
+        .then(function(code) {
+          code += !isArray || isArray && index < keys.length - 1 ? ',' : '';
+          code += '\n';
+          return code;
+        });
+    }, code)
+    .then(function(code) {
+      return code + outerTab + (isArray ? ']' : '}');
+    });
 };
