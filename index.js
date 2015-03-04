@@ -19,7 +19,7 @@ module.exports.pitch = function(remainingRequest) {
   this.cacheable && this.cacheable();
   var done = this.async();
   var query = loaderUtils.parseQuery(this.query);
-  var emberOptions = this.options[query.optionKey || 'ember'];
+  var emberOptions = this.options[query.optionKey || 'ember'] || {};
   var archetypes = this.archetypes =
     ArchetypeArray.fromOptions(this.options, emberOptions, query);
 
@@ -106,6 +106,7 @@ module.exports.pitch = function(remainingRequest) {
     .then(generateObj)
     .then(function(objCode) {
       var result = targetCode;
+      var lines = [];
 
       if (query.ignoreOverrides) {
         result = '{}';
@@ -113,7 +114,25 @@ module.exports.pitch = function(remainingRequest) {
 
       result = extendCode + '(' + objCode + ', ' + result + ')';
 
-      return  'module.exports =\n' + result + ';\n';
+      if (query.application) {
+        lines.push('var content = ' + extendCode + '(' +
+          'require(' +
+            JSON.stringify(__dirname).replace(/"$/g, '') + '?src=.!' +
+            JSON.stringify(path.resolve(__dirname, 'lib/app')).substring(1) +
+          '), ' +
+          result +
+        ');');
+        lines.push('var Application = Ember.Application.extend(content);');
+        lines.push('Object.keys(content.INITIALIZERS || {})' +
+          '.forEach(function(key) {' +
+            'Application.initializer(content.INITIALIZERS[key]);' +
+          '});');
+        result = 'Application';
+      }
+
+      lines.push('module.exports = ' + result + ';');
+
+      return lines.join('\n');
     })
     .then(function(v) {done(null, v);}, done);
 };
