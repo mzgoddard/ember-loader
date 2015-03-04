@@ -49,8 +49,8 @@ module.exports.pitch = function(remainingRequest) {
     // TODO 0.1: Remove query.componentsDirectories
     var componentDirs = (query.componentsDirectories || [])
       // TODO 0.1: Remove concatComponentsDirectories
-      .concat(emberOptions && emberOptions.concatComponentsDirectories || [])
-      .concat(this.options.resolve.modulesDirectories || []);
+      .concat(emberOptions.concatComponentsDirectories || [])
+      .concat(emberOptions.modulesDirectories || []);
     componentDirs = _.uniq(componentDirs);
     if (componentDirs.length === 0) {
       componentDirs = ['node_modules'];
