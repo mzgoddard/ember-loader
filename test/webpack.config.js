@@ -22,6 +22,9 @@ module.exports = {
     concatComponentsDirectories: [
       'bower_components', 'node_modules', 'web_modules'
     ],
+    modulesDirectories: [
+      'bower_components', 'node_modules', 'web_modules'
+    ],
   },
 
   emberWithDefaults: {
@@ -105,6 +108,10 @@ module.exports = {
   //
   // Demonstrate including module deps.
   emberWithExternalComponents: {
+    modulesDirectories: [
+      'bower_components', 'node_modules', 'web_modules'
+    ],
+
     typeOrder: [
       'external_component'
     ],
