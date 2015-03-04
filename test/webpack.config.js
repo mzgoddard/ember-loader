@@ -106,10 +106,6 @@ module.exports = {
     },
   },
 
-  // TODO 0.1: Remove this comment. This duplicates external_component in
-  // archetype to demonstrate the ability since at that time as a default it'll
-  // be removed.
-  //
   // Demonstrate including module deps.
   emberWithExternalComponents: {
     modulesDirectories: [
@@ -146,7 +142,11 @@ module.exports = {
               JSON.stringify(match.fullpath) + '),',
             tab1 + '"package": require("!!' +
               JSON.stringify(emberLoader).replace(/^"|"$/g, '') +
-              '?ignoreOverrides&depsLookup[]=modules!' +
+              '?' + [
+                'ignoreOverrides',
+                'depsLookup[]=modules',
+                'optionKey=emberWithExternalComponents'
+              ].join('&') + '!' +
               JSON.stringify(match.fullpath).substring(1) + ')',
             tab0 + '}'
           ].join('\n');

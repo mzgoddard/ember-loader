@@ -46,16 +46,8 @@ describe('single type', function() {
     expect(module.DeepDeeperIndexController).to.exist;
   });
 
-  it('should load the init fixture', function() {
-    var module = require('!!../!./fixtures/initializer');
-    expect(Object.keys(module)).to.have.length.of(1);
-    expect(module.INITIALIZERS).to.exist;
-    expect(Object.keys(module.INITIALIZERS)).to.have.length.of(1);
-    expect(module.INITIALIZERS['index']).to.exist;
-  });
-
   it('should load the initializer fixture', function() {
-    var module = require('!!../!./fixtures/initializer-new');
+    var module = require('!!../!./fixtures/initializer');
     expect(Object.keys(module)).to.have.length.of(1);
     expect(module.INITIALIZERS).to.exist;
     expect(Object.keys(module.INITIALIZERS)).to.have.length.of(1);
@@ -84,18 +76,15 @@ describe('single type', function() {
 
   it('should load fixture router', function() {
     var module = require('!!../!./fixtures/router');
-    expect(Object.keys(module)).to.have.length.of(2);
+    expect(Object.keys(module)).to.have.length.of(1);
     expect(module.ROUTERS).to.exist;
-    expect(module.ROUTING).to.exist;
   });
 
   it('should load fixture router-multiple', function() {
     var module = require('!!../!./fixtures/router-multiple');
-    expect(Object.keys(module)).to.have.length.of(2);
+    expect(Object.keys(module)).to.have.length.of(1);
     expect(module.ROUTERS).to.exist;
     expect(module.ROUTERS).to.have.length(2);
-    expect(module.ROUTING).to.exist;
-    expect(module.ROUTING).to.be.a('function');
   });
 
   it('should load the shallow template fixture', function() {
@@ -182,25 +171,12 @@ describe('components', function() {
   });
 
   it('should load fixture component-simple', function() {
-    var simple = require('!!../!./fixtures/component-simple');
-    expect(Object.keys(simple)).to.have.length.of(1);
-    expect(simple.ChildComponent).to.exist;
-  });
-
-  it('should load fixture component-simple', function() {
     var simple = require(
       '!!..?optionKey=emberWithExternalComponents' +
         '!./fixtures/component-simple'
     );
     expect(Object.keys(simple)).to.have.length.of(1);
     expect(simple.ChildComponent).to.exist;
-  });
-
-  it('should load fixture component-deep', function() {
-    var module = require('!!../!./fixtures/component-deep');
-    expect(Object.keys(module)).to.have.length.of(2);
-    expect(module.ShallowComponent).to.exist;
-    expect(module.DeepComponent).to.exist;
   });
 
   it('should load fixture component-deep', function() {
@@ -213,25 +189,9 @@ describe('components', function() {
   });
 
   it('should load fixture component-web-modules', function() {
-    var module = require('!!../!./fixtures/component-web-modules');
-    expect(Object.keys(module)).to.have.length.of(1);
-    expect(module.ChildComponent).to.exist;
-  });
-
-  it('should load fixture component-web-modules', function() {
     var module = require(
       '!!..?optionKey=emberWithExternalComponents' +
         '!./fixtures/component-web-modules'
-    );
-    expect(Object.keys(module)).to.have.length.of(1);
-    expect(module.ChildComponent).to.exist;
-  });
-
-  // TODO 0.1: Drop this test as we will drop componentsDirectories support.
-  it('should load fixture component-other-modules', function() {
-    var module = require(
-      '!!../?componentsDirectories[]=other_modules!' +
-      './fixtures/component-other-modules'
     );
     expect(Object.keys(module)).to.have.length.of(1);
     expect(module.ChildComponent).to.exist;
@@ -259,10 +219,9 @@ describe('modules', function() {
       'TestView',
       'INITIALIZERS',
       'TEMPLATES',
-      'ROUTERS',
-      'ROUTING'
+      'ROUTERS'
     );
-    expect(Object.keys(module)).to.have.length.of(11);
+    expect(Object.keys(module)).to.have.length.of(10);
     expect(module.INITIALIZERS.test).to.exist;
     expect(Object.keys(module.INITIALIZERS)).to.have.length.of(2);
     expect(module.TEMPLATES.test).to.exist;
@@ -292,9 +251,7 @@ describe('modules', function() {
     expect(Object.keys(module)).to.have.length.of(15);
     expect(module.TEMPLATES).to.include.keys(
       'application',
-      'application/index'
-    );
-    expect(module.TEMPLATES).to.not.include.keys(
+      'application/index',
       'pod/item/component'
     );
   });

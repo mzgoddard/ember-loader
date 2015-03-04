@@ -45,17 +45,11 @@ module.exports.pitch = function(remainingRequest) {
   var allDeps = [];
   var depsLookup = query.depsLookup || ['modules', 'context'];
   if (_.contains(depsLookup, 'modules')) {
-    // load components from external module directories
-    // TODO 0.1: Remove query.componentsDirectories
-    var componentDirs = (query.componentsDirectories || [])
-      // TODO 0.1: Remove concatComponentsDirectories
-      .concat(emberOptions.concatComponentsDirectories || [])
-      .concat(emberOptions.modulesDirectories || []);
-    componentDirs = _.uniq(componentDirs);
-    if (componentDirs.length === 0) {
-      componentDirs = ['node_modules'];
+    var moduleDirs = emberOptions.modulesDirectories || [];
+    if (moduleDirs.length === 0) {
+      moduleDirs = ['node_modules'];
     }
-    var packageDeps = promise.resolve(componentDirs)
+    var packageDeps = promise.resolve(moduleDirs)
       .bind(this)
       .map(function(dir) {
         return findModuleDeps.call(this, lastRequestPackage, dir);
