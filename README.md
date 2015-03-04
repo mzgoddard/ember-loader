@@ -6,12 +6,12 @@ A project with the following structure:
 
 ```javascript
 // index.js
-module.exports = {
-  ROUTERS: [
-    function() {
-      this.route('index');
-    }
-  ]
+// Available to overwrite automatically included options but required to exist
+// even if empty.
+
+// src/router.js
+module.exports = function() {
+  this.route('index');
 };
 
 // src/index/controller.js
@@ -39,21 +39,74 @@ module.exports = {
 };
 ```
 
-which can be used with:
+which can become an application the application query parameter:
 
 ```javascript
-var module = require('ember!.');
-Ember.TEMPLATES = module.TEMPLATES;
-
-App = Ember.Application.create(module);
-module.ROUTERS.forEach(function(router) {
-  App.Router.map(router);
-});
+var Application = require('ember-loader?application!./index');
+Application.create();
 ```
+
+## Examples
+
+Examples can be found in [ember-loader-examples](https://www.github.com/mzgoddard/ember-loader-examples).
 
 ## Use
 
-Make sure in your webpack configuration to have use ember-templates-loader or another loader to load ember handlebar templates.
+Make sure in your webpack configuration, to have ember-templates-loader, or another loader, load ember handlebar templates and similar for your stylesheet format of choice.
+
+```javascript
+// Example webpack configuration.
+module.exports = {
+  context: __dirname,
+  entry: __dirname + '/main.js',
+  output: {
+    path: __dirname + '/dist',
+    filename: 'bundle.js'
+  },
+  module: {
+    loaders: [
+      { test: /\.hbs$/, loader: 'ember-templates-loader' },
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
+    ]
+  },
+  resolve: {
+    modulesDirectories: ['./bower_components', './node_modules'],
+    alias: {
+      ember: 'ember/ember',
+      handlebars: 'handlebars/handlebars',
+      jquery: 'jquery/dist/jquery'
+    }
+  }
+};
+```
+
+### Query Parameters
+
+#### `application`
+
+Normally ember-loader returns vanilla JS objects since they are easy to operate on. `?application` returns an Ember.Application from the object normally returned. Templates and routers are connected to the application through default initializers that can be overriden.
+
+- `ember-loader-routers`: Calls the Application instance's Router.map on each function defined in `ROUTERS` from `router.js` files.
+- `ember-loader-templates`: Sets Ember.TEMPLATES to the TEMPLATES object. Overriding with an empty initializer and adding a custom Resolver, it could resolve off the Application's Namespace instead of Ember.TEMPLATES.
+
+#### `src`
+
+The default is `'src'`. Instructs `ember-loader` where in relation to the target file for manual overrides where to look for files to automatically include.
+
+#### `optionKey`
+
+The default is `'ember'`. Instructs `ember-loader` where to find values for [Configuration](#configuration).
+
+#### `depsLookup`
+
+The default is `['module', 'context']`. How `ember-loader` looks for files to include. Currently supports two values, overriding `depsLookup` lets you disable one or both of the methods.
+
+- `'module'`: Looks in webpack's resolve.modulesDirectories for the target and stores `module_directory/{{moduleName}}` to be considered for inclusion later.
+- `'context'`: Looks at [src](#src) of the target so that things like `components/list-item/index.js` or `list-item-component.js` can be considered later.
+
+#### `ignoreOverrides`
+
+If truthy `ember-loader` doesn't consider the target overrides file. The file is still required for webpack but any values will be skipped. This can be useful if an external module represents instead of a collection of Ember classes, a specific class, like a Component.
 
 ### Configuration
 
@@ -67,7 +120,7 @@ If you set `typeOrder` you need include all types you want `ember-loader` to con
 
 ```js
 {
-  emberOptions: {
+  ember: {
     typeOrder: [
       'component',
       'model',
@@ -88,7 +141,7 @@ If you set `typeOrder` you need include all types you want `ember-loader` to con
 
 ```js
 {
-  emberOptions: {
+  ember: {
     types: {
       template: {
         store: function(module, params) {
