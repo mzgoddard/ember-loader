@@ -122,6 +122,49 @@ describe('single type', function() {
     expect(module.TEMPLATES['deep/deep']).to.exist;
   });
 
+  it('should load the style-css fixture', function() {
+    var module = require('!!..!./fixtures/style-css');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.STYLES).to.exist;
+    expect(Object.keys(module.STYLES)).to.have.length.of(2);
+    expect(module.STYLES).to.have.keys('index', 'application');
+  });
+
+  it('should load the style-css-extend fixture', function() {
+    var module = require('!!..!./fixtures/style-css-extend');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.STYLES).to.exist;
+    expect(Object.keys(module.STYLES)).to.have.length.of(2);
+    expect(module.STYLES).to.have.keys('index', 'application');
+    expect(module.STYLES.index).to.equal('.unrecognized-index {}\n');
+    expect(module.STYLES.application).to
+      .equal('.unrecognized-application {}\n');
+  });
+
+  it('should load the style-less fixture', function() {
+    var module = require('!!..!./fixtures/style-less');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.STYLES).to.exist;
+    expect(Object.keys(module.STYLES)).to.have.length.of(2);
+    expect(module.STYLES).to.have.keys('index', 'application');
+  });
+
+  it('should load the style-sass fixture', function() {
+    var module = require('!!..!./fixtures/style-sass');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.STYLES).to.exist;
+    expect(Object.keys(module.STYLES)).to.have.length.of(2);
+    expect(module.STYLES).to.have.keys('index', 'application');
+  });
+
+  it('should load the style-stylus fixture', function() {
+    var module = require('!!..!./fixtures/style-stylus');
+    expect(Object.keys(module)).to.have.length.of(1);
+    expect(module.STYLES).to.exist;
+    expect(Object.keys(module.STYLES)).to.have.length.of(2);
+    expect(module.STYLES).to.have.keys('index', 'application');
+  });
+
 });
 
 describe('components', function() {

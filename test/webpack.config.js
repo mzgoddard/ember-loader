@@ -9,7 +9,11 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.hbs$/, loader: 'ember-templates' }
+      { test: /\.hbs$/, loader: 'ember-templates' },
+      { test: /\.css$/, loader: 'raw' },
+      { test: /\.less$/, loader: 'raw' },
+      { test: /\.sass$/, loader: 'raw' },
+      { test: /\.styl$/, loader: 'raw' }
     ]
   },
   resolve: {
