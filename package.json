@@ -8,7 +8,7 @@
   "authors": [
     "Michael \"Z\" Goddard <mzgoddard@gmail.com>"
   ],
-  "version": "0.0.19",
+  "version": "0.0.20",
   "scripts": {
     "install": "bower install",
     "test": "testem ci"
